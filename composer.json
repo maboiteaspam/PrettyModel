@@ -2,12 +2,12 @@
     "name": "maboiteaspam/pretty-model",
     "type": "library",
     "description": "Pretty model, a bitch orm",
-    "keywords": ["orm", "bitch","pretty","model"],
+    "keywords": ["orm", "pretty","model"],
     "license": "",
     "authors": [
         {
-            "name": "clement",
-            "email": "maboiteaspam@wanadoo.fr"
+            "name": "maboiteaspam",
+            "email": "maboiteaspam@nowhere.com"
         }
     ],
     "require": {
