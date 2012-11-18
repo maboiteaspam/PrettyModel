@@ -1,1 +1,36 @@
-This file was created by JetBrains PhpStorm 5.0.1 for binding GitHub repository
+Pretty ORM
+A php ORM made to be pretty.
+
+Based on Idiorm and Paris
+
+Improved by use of Annotations in a Doctrine like fashion
+Improved by automatic create, update of the database schema in a Lazy fashion
+
+Provide support for Mysql, and incomplete support of SQLite
+
+Does yet know how to create, read, update, delete a model
+Does yet know how to associate models in one-one, one-many, many-many, many-one
+Does yet provide a SQL writer
+
+Does provide integration for PHPUnit testing
+
+Is PSR-0 compliant
+
+Looking forward to be full PSR compliant
+
+Does not yet know how to
+- cache
+- provide Driver specific SQL writing
+- Summarize missing stuff, ToBeDone.
+
+Stuff in progress
+- composer integration
+- unit testing with top code coverage
+- split of idiorm into ModelRaw, pure SQL Writer
+- Improve SQL Writer Model aware (Let inner join/where ect an association property Model::where("association.property", "some value") )
+- Packaging of external libraries (Addendum / Idiorm) for composer and autoloading
+- Move of external libraries to vendors dir as it should be
+- documentation by example
+
+Introduction
+You can look main.php in www/ dir to have a first field game.

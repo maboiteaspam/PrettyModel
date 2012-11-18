@@ -1,10 +1,47 @@
 <?php
 
+var_dump("Init start....");
+
+# region configuration (to externalize ?)
+$class_path = array("model/");
+$cache_dir = "cache/";
+
+// MySQL setup
+$db_type = "mysql";
+$db_name = "test";
+$db_user = "root";
+$db_pwd = "123456";
+$db_host= "localhost";
+$db = new PDO(
+    "$db_type:host=$db_host;dbname=$db_name",
+    $db_user,
+    $db_pwd,
+    array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''));
+
+/*
+    SQLite memory setup
+$db_type = "sqlite";
+$db_name = ":memory:";
+$db_user = null;
+$db_pwd = null;
+$db_host= null;
+
+$db = new PDO(
+    'sqlite::memory:',
+    $db_user,
+    $db_pwd
+);
+ */
+
+$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+# endregion
+
+# region vendors libs to package later
 require("../src/Addedum-0.4.1/annotations.php");
 require("../src/idiorm/idiorm.php");
-//require("vendors/db_helper/db_helper.php");
-//require("vendors/pretty/model.php");
+# endregion
 
+# region auto loading PSR0 compliant
 function resolve_class_name($className)
 {
     $className = ltrim($className, '\\');
@@ -28,36 +65,35 @@ spl_autoload_register( function ($class_name) use($dir){
         }
     }
 });
+# endregion
 
 
+
+
+# region Initialization
 use Pretty\Facade as Facade;
 
-// could be a testing DSN : sqlite::memory:
-$db = new PDO(
-    'mysql:host=localhost;dbname=test',
-    'root',
-    '123456',
-    array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''));
-$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-$db_type= "mysql";
-$db_name= "test";
-$modeler = \DBHelper\Smart::factory($db_type, $db_name, $db);
-$modeler = new \DBHelper\Modeler\ActiveRecorder($modeler);
-$cache = new Pretty\Cache\File("cache/");
-$class_path = array("model/");
+$cache      = new Pretty\Cache\File($cache_dir);
+$modeler    = \DBHelper\Smart::factory($db_type, $db_name, $db);
 
+// the active recorder is an helper to speed up the modeler layer that
+// makes lots of useless sql queries by default
+$modeler    = new \DBHelper\Modeler\ActiveRecorder($modeler);
+
+// set up the Facade with required module, a classpath, a modeler and a cache system
 $Facade = \Pretty\Facade::auto($class_path, $modeler, $cache);
 
-/*
-$Facade->clean_up();
- */
+// for dev prupose it is usefull to clean up database and cache
+// $Facade->clean_up();
 
-var_dump("ok");
+# endregion
 
-$car = new Car();
-$color = new Color();
-$dumb = new CarlaBruni();
-$jewel = new Jewel();
+var_dump("Init done....");
+
+$car    = new Car();
+$color  = new Color();
+$dumb   = new CarlaBruni();
+$jewel  = new Jewel();
 
 
 $dumb = new CarlaBruni();
