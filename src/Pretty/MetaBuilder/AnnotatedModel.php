@@ -1,5 +1,5 @@
 <?php
-namespace Pretty\MetaData;
+namespace Pretty\MetaBuilder;
 
 class AnnotatedModel
 {
