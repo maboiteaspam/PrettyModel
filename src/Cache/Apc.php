@@ -1,8 +1,10 @@
 <?php
-namespace Pretty\Cache;
+namespace Cache;
 
 class Apc implements ICache
 {
+    use ArrayLikeActor;
+
     public function write($key, $data){
         return apc_store($key , ($data));
     }
@@ -17,5 +19,9 @@ class Apc implements ICache
     }
     public function purge(){
         return apc_clear_cache();
+    }
+    public function count(){
+        $info = apc_cache_info("user", true);
+        return $info["num_entries"];
     }
 }

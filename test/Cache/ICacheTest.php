@@ -1,11 +1,11 @@
 <?php
-namespace Pretty\Cache;
+namespace Cache;
 /**
  */
 class ICacheTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Pretty\Cache\ICache
+     * @var \Cache\ICache
      */
     protected $object;
 

@@ -1,8 +1,10 @@
 <?php
-namespace Pretty\Cache;
+namespace Cache;
 
 class PhpArray implements ICache
 {
+    use ArrayLikeActor;
+
     public $items;
     public function __construct(  ){
         $this->items = array();

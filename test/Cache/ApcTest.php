@@ -1,5 +1,5 @@
 <?php
-namespace Pretty\Cache;
+namespace Cache;
 
 class ApcTest extends ICacheTest
 {

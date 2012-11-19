@@ -1,8 +1,10 @@
 <?php
-namespace Pretty\Cache;
+namespace Cache;
 
 class File implements ICache
 {
+    use ArrayLikeActor;
+
     public $path;
     public function __construct( $path ){
         $this->path = $path;
@@ -34,4 +36,5 @@ class File implements ICache
         }
         return $retour;
     }
+
 }

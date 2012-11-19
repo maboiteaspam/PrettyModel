@@ -68,12 +68,12 @@ spl_autoload_register( function ($class_name) use($dir){
 # endregion
 
 
-
-
 # region Initialization
 use Pretty\Facade as Facade;
 
-$cache      = new Pretty\Cache\File($cache_dir);
+$cache      = array();
+$cache      = new Cache\File($cache_dir);
+
 $modeler    = \DBHelper\Smart::factory($db_type, $db_name, $db);
 
 // the active recorder is an helper to speed up the modeler layer that
@@ -121,10 +121,9 @@ $carla->save();
 $s = microtime(true);
 for( $i=0,$m=2000;$i<$m;$i++){
     ($jewel->carla_bruni->find()->nom);
-    $carla->save();
 }
 $s = microtime(true)-$s;
-var_dump((($m*2)/$s)." qps with $m queries in $s s") ;
+var_dump((($m)/$s)." qps with $m queries in $s s") ;
 var_dump($jewel->carla_bruni->find()->prenom);
 var_dump("ok");
 
