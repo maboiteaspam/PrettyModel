@@ -1,9 +1,11 @@
 <?php
 namespace Pretty\MetaBuilder;
+
 use Pretty\MetaData\ClassModel as ClassModel;
-use Pretty\MetaData\AnnotatedModel as AnnotatedModel;
 use Pretty\MetaData\Index as Index;
 use Pretty\MetaData\Property as Property;
+
+include("Annotations.php");
 
 class ClassBuilder
 {
