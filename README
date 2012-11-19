@@ -14,7 +14,6 @@ Does yet provide a SQL writer
 
 Does provide integration for PHPUnit testing
 
-Is PSR-0 compliant
 
 Looking forward to be full PSR compliant
 
@@ -24,6 +23,7 @@ Does not yet know how to
 - Summarize missing stuff, ToBeDone.
 
 Stuff in progress
+- PSR-0 compliant
 - composer integration
 - unit testing with top code coverage
 - split of idiorm into ModelRaw, pure SQL Writer
