@@ -8,7 +8,7 @@ $cache_dir = "cache/";
 
 // MySQL setup
 $db_type = "mysql";
-$db_name = "test";
+$db_name = "pretty_test";
 $db_user = "root";
 $db_pwd = "123456";
 $db_host= "localhost";
