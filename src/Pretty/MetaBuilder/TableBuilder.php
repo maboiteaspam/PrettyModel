@@ -4,8 +4,10 @@ namespace Pretty\MetaBuilder;
 use Pretty\MetaData\ClassModel as ClassModel;
 use Pretty\MetaData\Property as Property;
 use Pretty\MetaData\Index as Index;
+use Pretty\MetaLoader\ILoader as ILoader;
 
 use DBHelper\Modeler\ITableModeler as ITableModeler;
+
 
 class TableBuilder
 {

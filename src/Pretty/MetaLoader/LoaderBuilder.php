@@ -1,10 +1,11 @@
 <?php
-namespace Pretty\MetaBuilder;
+namespace Pretty\MetaLoader;
 
 use Pretty\MetaData\ClassModel as ClassModel;
-use Pretty\Cache\ICache as Cache;
+use Pretty\MetaBuilder\TableBuilder as TableBuilder;
+use Pretty\MetaBuilder\ClassBuilder as ClassBuilder;
+use Pretty\MetaBuilder\ClassEnhancer as ClassEnhancer;
 use DBHelper\Modeler\ITableModeler as Modeler;
-use DBHelper\Smart as Smart;
 
 /**
  */
@@ -29,7 +30,7 @@ class LoaderBuilder implements ILoader
      */
     public $meta_class_enhancer;
     /**
-     * @var Cache
+     * @var array
      */
     public $cache;
 
@@ -38,9 +39,9 @@ class LoaderBuilder implements ILoader
 
     /**
      * @param \DBHelper\Modeler\ITableModeler $modeler
-     * @param \Pretty\Cache\ICache $cache
+     * @param  $cache
      */
-    public function __construct( \DBHelper\Modeler\ITableModeler $modeler, Cache $cache){
+    public function __construct( \DBHelper\Modeler\ITableModeler $modeler, $cache){
         $this->cache = $cache;
         $this->table_builder = new TableBuilder( $this, $modeler );
         $this->meta_class_builder = new ClassBuilder();
@@ -58,25 +59,26 @@ class LoaderBuilder implements ILoader
             $file = $r->getFileName();
             $create_model = true;
 
-            if( $this->cache->exists($class_name) ){
-                $storable = $this->cache->read($class_name);
+            if( isset($this->cache[$class_name]) ){
+                $storable = $this->cache[$class_name];
                 if( $storable["file"] == $file
                     && $storable["time"] == filemtime($file) ){
                     $create_model = false;
                     $this->meta_data_dressing[$class_name] = $storable["meta"];
                 }else{
-                    $this->cache->delete($class_name);
+                    unset($this->cache[$class_name]);
                 }
             }
 
             if( $create_model ){
                 $this->meta_data_dressing[$class_name] = $this->meta_class_builder->create_class_meta_data($class_name);
                 $this->meta_class_enhancer->cold_enhancement($this->meta_data_dressing[$class_name]);
-                $this->cache->write($class_name, array(
+
+                $this->cache[$class_name] = array(
                     "meta"=>$this->meta_data_dressing[$class_name],
                     "file"=>$file,
                     "time"=>filemtime($file),
-                ));
+                );
 
                 $this->table_builder->build_a_table($this->meta_data_dressing[$class_name]);
             }

@@ -1,5 +1,5 @@
 <?php
-namespace Pretty\MetaBuilder;
+namespace Pretty\MetaLoader;
 /**
  */
 interface ILoader
