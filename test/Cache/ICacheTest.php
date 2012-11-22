@@ -99,6 +99,24 @@ class ICacheTest extends \PHPUnit_Framework_TestCase
             "");
     }
 
+    function testCount(){
+        $this->object->purge();
+        $this->assertEquals(0, $this->object->count(), "");
+        $this->object->write("test", "test");
+        $this->assertEquals(1, $this->object->count(), "");
+        $this->object->purge();
+        $this->assertEquals(0, $this->object->count(), "");
+        $this->object->write("test", "test");
+        $this->object->write("test", "test");
+        $this->assertEquals(1, $this->object->count(), "");
+        $this->object->write("test2", "test");
+        $this->assertEquals(2, $this->object->count(), "");
+        $this->object->delete("test2");
+        $this->assertEquals(1, $this->object->count(), "");
+        $this->object->delete("test");
+        $this->assertEquals(0, $this->object->count(), "");
+    }
+
     function testPurge(){
         $this->object->purge();
         $this->object->write("test", "test");
@@ -108,6 +126,67 @@ class ICacheTest extends \PHPUnit_Framework_TestCase
             "");
         $this->assertEquals(false,
             $this->object->read("test"),
+            "");
+    }
+
+    function testArrayLike(){
+        $this->object->purge();
+        $this->assertEquals(false,
+            $this->object->exists("test"),
+            "");
+        $this->object["test"] = "test";
+        $this->assertEquals(true,
+            $this->object->exists("test"),
+            "");
+        $this->assertEquals(true,
+            isset($this->object["test"]),
+            "");
+        $this->assertEquals("test",
+            $this->object->read("test"),
+            "");
+        $this->assertEquals("test",
+            $this->object["test"],
+            "");
+        unset($this->object["test"]);
+        $this->assertEquals(false,
+            $this->object->exists("test2"),
+            "");
+        $this->assertEquals(false,
+            isset($this->object["test"]),
+            "");
+        $this->assertEquals(null,
+            $this->object->read("test"),
+            "");
+        $this->assertEquals(null,
+            $this->object["test"],
+            "");
+
+
+        $this->object->test2 = "test2";
+        $this->assertEquals(true,
+            $this->object->exists("test2"),
+            "");
+        $this->assertEquals(true,
+            isset($this->object->test2),
+            "");
+        $this->assertEquals("test2",
+            $this->object->read("test2"),
+            "");
+        $this->assertEquals("test2",
+            $this->object->test2,
+            "");
+        unset($this->object->test2);
+        $this->assertEquals(false,
+            $this->object->exists("test2"),
+            "");
+        $this->assertEquals(false,
+            isset($this->object->test2),
+            "");
+        $this->assertEquals(null,
+            $this->object->read("test2"),
+            "");
+        $this->assertEquals(null,
+            $this->object->test2,
             "");
     }
 }
