@@ -32,4 +32,7 @@ class PhpArray implements ICache
         $this->items = array();
         return true;
     }
+    public function count(){
+        return count($this->items);
+    }
 }

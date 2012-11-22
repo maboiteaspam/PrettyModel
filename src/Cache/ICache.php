@@ -29,7 +29,14 @@ interface ICache extends \ArrayAccess {
     public function delete($key);
 
     /**
-     *
+     * Purge the cache when possible
+     * @return bool
      */
     public function purge();
+
+    /**
+     * Count number of entries within the cache
+     * @return int
+     */
+    public function count();
 }

@@ -1,7 +1,11 @@
 <?php
 namespace Cache;
 /**
- *
+ * Used together with
+ * an interface or a class
+ * that implements ICache
+ * It helps you to implement
+ * very easily ArrayAccess
  */
 trait ArrayLikeActor{
     public function __set($offset, $value) {

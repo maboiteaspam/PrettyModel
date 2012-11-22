@@ -1,28 +1,19 @@
 <?php
-namespace Pretty\MetaBuilder;
-use Pretty\MetaLoader\ILoader as ILoader;
+namespace Pretty\Builder;
+
 use Pretty\MetaData\ClassModel as ClassModel;
 use Pretty\MetaData\Property as Property;
 /**
  */
 class ClassEnhancer
 {
-    /**
-     * @var ILoader
-     */
-    protected $loader;
-
-    public function __construct( ILoader $loader ){
-        $this->loader = $loader;
-    }
-
-    public function cold_enhancement( ClassModel $class_meta ){
+    public function cold_enhancement( \Pretty\Facade $facade, ClassModel $class_meta ){
         foreach( $class_meta->properties as $property_name=>$property_ ){
             /* @var $property_ Property */
             if( $property_->property_type == "association" ){
 
                 if( $property_->association == "BelongsTo" ){
-                    $foreign_meta = $this->loader->get_meta_data($property_->value_type);
+                    $foreign_meta = $facade->get_meta_data($property_->value_type);
                     $foreign_pk_fields = $foreign_meta->getPKFields();
 
                     foreach( $foreign_pk_fields as $foreign_pk_field ){
@@ -62,7 +53,7 @@ class ClassEnhancer
         return $class_meta;
     }
 
-    public function JIT_enhancement( ClassModel $class_meta ){
+    public function JIT_enhancement( $facade, ClassModel $class_meta ){
         foreach( $class_meta->properties as $property_name => $property_){
             /* @var $property_ Property */
             if( $property_->property_type == "scalar" ){

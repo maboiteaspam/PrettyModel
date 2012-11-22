@@ -76,12 +76,13 @@ $cache      = new Cache\File($cache_dir);
 
 $modeler    = \DBHelper\Smart::factory($db_type, $db_name, $db);
 
-// the active recorder is an helper to speed up the modeler layer that
-// makes lots of useless sql queries by default
-$modeler    = new \DBHelper\Modeler\ActiveRecorder($modeler);
+// the builder transform a class definition
+// into a meta object
+// into a concrete sql table
+$builder = \Pretty\Builder\Builder::factory();
 
-// set up the Facade with required module, a classpath, a modeler and a cache system
-$Facade = \Pretty\Facade::auto($class_path, $modeler, $cache);
+// set up the Facade with required class_path to listen and builder to build
+$Facade = \Pretty\Facade::auto($class_path, $modeler, $builder, $cache);
 
 // for dev prupose it is usefull to clean up database and cache
 // $Facade->clean_up();

@@ -1,5 +1,5 @@
 <?php
-namespace Pretty\MetaBuilder;
+namespace Pretty\Annotations;
 
 use Pretty\MetaData\ClassModel as ClassModel;
 use Pretty\MetaData\Index as Index;
@@ -7,7 +7,7 @@ use Pretty\MetaData\Property as Property;
 
 include("Annotations.php");
 
-class ClassBuilder
+class Converter
 {
     public function __construct(  ){
     }

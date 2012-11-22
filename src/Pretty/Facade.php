@@ -1,8 +1,11 @@
 <?php
 namespace Pretty;
 
+use Cache\ICache as ICache;
+use DBHelper\Modeler\ITableModeler as TableModeler;
 use Pretty\MetaData\ClassModel as ClassModel;
-use Pretty\MetaLoader\LoaderBuilder as LoaderBuilder;
+use Pretty\Builder\IBuilder as Builder;
+use Pretty\Repository\Repository as Repository;
 
 class Facade
 {
@@ -31,18 +34,20 @@ class Facade
     }
 
     /**
-     * Initialize a nez facade, register it, and select it
-     * If cache is null, a default PhpArray object is used instead
+     * Initialize a new facade, register it, and select it
      *
-     * @param $class_path
-     * @param $modeler
-     * @param  $cache
+     * @param  $class_path
+     * @param \DBHelper\Modeler\ITableModeler $modeler
+     * @param \Pretty\Builder\IBuilder $builder
+     * @param ICache $cache
      * @return Facade
      */
-    public static function auto($class_path, \DBHelper\Modeler\ITableModeler $modeler, $cache=array()){
-        $class_path = is_string($class_path)?array($class_path):$class_path;
-        $loader = new LoaderBuilder($modeler, $cache);
-        $Facade = new Facade($class_path, $loader);
+    public static function auto($class_path,
+                                TableModeler $modeler,
+                                Builder $builder,
+                                ICache $cache){
+        $repository = new Repository();
+        $Facade = new Facade($modeler, $repository, $builder, $class_path, $cache);
         $facade_name = "automatic";
         self::set($facade_name, $Facade);
         self::select($facade_name);
@@ -74,18 +79,38 @@ class Facade
 
 
     /**
-     * @var array
+     * @var \Pretty\Repository\Repository
      */
-    public $paths_to_models;
+    public $repository;
     /**
-     * @var MetaLoader\LoaderBuilder
+     * @var \Pretty\Builder\IBuilder
      */
-    private $loader_builder;
+    private $builder;
+    private $class_loader;
+    private $cache;
+    private $modeler;
 
 
-    public function __construct ($paths_to_models, LoaderBuilder $loader){
-        $this->paths_to_models = $paths_to_models;
-        $this->loader_builder = $loader;
+    public function __construct ( $class_path,
+                                  TableModeler $modeler,
+                                  Repository $repository,
+                                  Builder $builder,
+                                  ICache $cache){
+        $this->modeler      = $modeler;
+        $this->repository   = $repository;
+        $this->builder      = $builder;
+        $this->class_loader = new \Pretty\Util\ClassLoader($class_path);
+        $this->cache        = $cache;
+
+        $Facade = $this;
+        $this->class_loader->listen(function($class_name) use ($Facade) {
+            $parents = \class_parents($class_name);
+            if( $parents !== false ){
+                if( in_array("Pretty\Model", $parents) ){
+                    $this->get_meta_data($class_name);
+                }
+            }
+        });
     }
 
     /**
@@ -93,7 +118,50 @@ class Facade
      * @return ClassModel
      */
     public function get_meta_data( $class_name ){
-        return $this->loader_builder->get_meta_data($class_name);
+        if( ! isset($this->repository[$class_name]) ){
+
+            $r = new \ReflectionClass($class_name);
+            $file = $r->getFileName();
+            $create_model = true;
+            $update_model = false;
+            $meta = null;
+
+            if( isset($this->cache[$class_name]) ){
+                $create_model = false;
+                $storable = $this->cache[$class_name];
+
+                if( $storable["file"] == $file
+                    && $storable["fp"] == sha1_file($file) ){
+                    $meta = $this->repository[$class_name] = $storable["meta"];
+                }else{
+                    $previous_version = $this->cache[$class_name];
+                    unset($this->cache[$class_name]);
+                    $update_model = true;
+                }
+            }
+
+            if( $create_model ){
+                $meta = $this->builder->build_meta_data($this, $this->repository, $class_name);
+
+                $this->cache[$class_name] = array(
+                    "meta"=>$meta,
+                    "file"=>$file,
+                    "fp"=>sha1_file($file),
+                );
+                $this->builder->create_table($this, $meta);
+            }else if( $update_model ){
+                $meta = $this->builder->build_meta_data($this, $this->repository, $class_name);
+                // can do some diff with $previous_version
+                $this->cache[$class_name] = array(
+                    "meta"=>$meta,
+                    "file"=>$file,
+                    "fp"=>sha1_file($file),
+                );
+                $this->builder->update_table($this, $meta);
+            }
+            $this->builder->enhance_jit($this, $meta);
+        }
+        return $this->repository[$class_name];
     }
 
     /**
@@ -102,7 +170,11 @@ class Facade
      * @return mixed
      */
     public function get_db_resource(  ){
-        return $this->loader_builder->table_builder->getModeler()->getLayer()->get_resource();
+        return $this->modeler->getLayer()->get_resource();
+    }
+
+    public function get_modeler( ){
+        return $this->modeler;
     }
 
     /**
@@ -114,7 +186,7 @@ class Facade
      */
     public function enable(  ){
         ModelORM::set_db( $this->get_db_resource() );
-        spl_autoload_register( array($this, "live_loader") );
+        $this->class_loader->enable(  );
     }
 
     /**
@@ -122,30 +194,7 @@ class Facade
      */
     public function disable(  ){
         ModelORM::set_db( null );
-        spl_autoload_unregister( array($this, "live_loader") );
-    }
-
-    /**
-     * Handler to listen loaded
-     * class and prepare their meta
-     * @param $class_name
-     */
-    public function live_loader( $class_name ){
-        $Facade = $this;
-        if( $Facade !== null ){
-            $f = resolve_class_name($class_name);
-            foreach( $this->paths_to_models as $d ){
-                if( file_exists($d.$f) ){
-                    require $d.$f;
-                    $parents = \class_parents($class_name);
-                    if( $parents !== false ){
-                        if( in_array("Pretty\Model", $parents) ){
-                            $Facade->get_meta_data($class_name);
-                        }
-                    }
-                }
-            }
-        }
+        $this->class_loader->disable( );
     }
 
     /**
@@ -153,8 +202,8 @@ class Facade
      * for dev purpose only
      */
     public function clean_up( ){
-        $this->loader_builder->table_builder->purge();
-        $this->loader_builder->cache->purge();
+        $this->modeler->purge();
+        $this->cache->purge();
     }
 }
 

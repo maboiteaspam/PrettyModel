@@ -28,13 +28,15 @@ class File implements ICache
     }
     public function purge(){
         $retour = false;
-        foreach( scandir("./cache") as $f ){
+        foreach( scandir($this->path."/") as $f ){
             if( in_array($f, array(".","..")) == false ){
-                unlink("./cache/".$f);
+                unlink($this->path."/".$f);
                 $retour = true;
             }
         }
         return $retour;
     }
-
+    public function count(){
+        return count(scandir($this->path."/"));
+    }
 }

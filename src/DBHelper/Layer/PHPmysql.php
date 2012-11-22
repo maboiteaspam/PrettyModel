@@ -2,7 +2,7 @@
 namespace DBHelper\Layer;
 /**
  */
-class PHPmysql
+class PHPmysql implements ILayer
 {
     protected $mysql;
     protected $db_name;

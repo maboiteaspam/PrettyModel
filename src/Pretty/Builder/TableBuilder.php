@@ -1,36 +1,24 @@
 <?php
-namespace Pretty\MetaBuilder;
+namespace Pretty\Builder;
 
 use Pretty\MetaData\ClassModel as ClassModel;
 use Pretty\MetaData\Property as Property;
 use Pretty\MetaData\Index as Index;
-use Pretty\MetaLoader\ILoader as ILoader;
 
 use DBHelper\Modeler\ITableModeler as ITableModeler;
 
 
 class TableBuilder
 {
-    /**
-     * @var ILoader
-     */
-    protected $loader;
 
-    /**
-     * @var \DBHelper\Modeler\ITableModeler
-     */
-    protected $modeler;
-
-    public function __construct( ILoader $loader, ITableModeler $modeler ){
-        $this->modeler = $modeler;
-        $this->loader = $loader;
-    }
-    public function getModeler(){
-        return $this->modeler;
+    public function __construct(){
     }
 
-    public function build_a_table( ClassModel $meta_data ){
-        $modeler = $this->modeler;
+    public function update_a_table( \Pretty\Facade $facade, ClassModel $meta_data ){
+
+    }
+    public function build_a_table( \Pretty\Facade $facade, ClassModel $meta_data ){
+        $modeler = $facade->get_modeler( );
         /* @var $modeler ITableModeler */
 
         /**
@@ -111,7 +99,7 @@ class TableBuilder
             if( $property_meta->property_type != "scalar" ){
 
                 if( $property_meta->association === "HasManyToMany" ){
-                    $foreign_meta = $this->loader->get_meta_data( $property_meta->value_type );
+                    $foreign_meta = $facade->get_meta_data( $property_meta->value_type );
                     $mid_table_name = array(
                         $foreign_meta->table_name,
                         $meta_data->table_name,
@@ -214,12 +202,5 @@ class TableBuilder
             $retour["type"] = "INT";
 
         return $retour;
-    }
-
-    /**
-     * @return int
-     */
-    public function purge(){
-        return $this->modeler->purge();
     }
 }
