@@ -20,7 +20,7 @@ interface ILayer {
      * and return results
      *
      * @param $sql
-     * @return Traversable|false
+     * @return \Traversable|false
      */
     function query($sql);
 

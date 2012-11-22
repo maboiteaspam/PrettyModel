@@ -132,9 +132,10 @@ class Facade
 
                 if( $storable["file"] == $file
                     && $storable["fp"] == sha1_file($file) ){
-                    $meta = $this->repository[$class_name] = $storable["meta"];
+                    $meta = $storable["meta"];
+                    $this->repository[$class_name] = $meta;
                 }else{
-                    $previous_version = $this->cache[$class_name];
+                    //$previous_version = $this->cache[$class_name];
                     unset($this->cache[$class_name]);
                     $update_model = true;
                 }

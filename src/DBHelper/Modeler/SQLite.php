@@ -43,7 +43,6 @@ class SQLite /*implements ITableModeler*/
      * @throws \DBHelper\SQLException
      */
     protected function exec($sql){
-        $retour = false;
         try{
             $retour = $this->layer->exec($sql)!==false;;
             if( $retour === false ){

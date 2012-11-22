@@ -7,7 +7,8 @@ class Smart
      * @param $db_type
      * @param $db_name
      * @param $resource_layer
-     * @return Modeler\ITableModeler
+     * @return Modeler\ActiveRecorder
+     * @throws \Exception
      */
     public static function factory($db_type, $db_name, $resource_layer){
 

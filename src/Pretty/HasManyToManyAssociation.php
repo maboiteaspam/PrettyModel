@@ -19,22 +19,18 @@ class HasManyToManyAssociation extends Association{
         return $model->save();
     }
     protected function apply_association(){
-        // The class name of the join model,
-        // formed by concatenating the names of the base class
-        // and the associated class, in alphabetical order.
-        $class_names = array($this->source_class, $this->target_class);
-        sort($class_names, SORT_STRING);
-        $join_class_name = join("", $class_names);
 
         $source_meta = Facade::get(null)->get_meta_data($this->source_class);
         $source_table_name = $source_meta->table_name;
         $source_pk = $source_meta->getPKFields();
 
-        $target_meta = Facade::get(null)->get_meta_data($this->target_class);
+        //$target_meta = Facade::get(null)->get_meta_data($this->target_class);
         $target_table_name = $source_meta->table_name;
         $target_pk = $source_meta->getPKFields();
 
-        // Get table names for each class
+        // The table name of the join model,
+        // formed by concatenating the names of the base table
+        // and the associated table , in alphabetical order.
         $table_names = array($source_table_name, $target_table_name);
         sort($table_names, SORT_STRING);
         $join_table_name = join("_", $table_names);

@@ -44,6 +44,7 @@ class ModelORM extends \ORM
         if (method_exists($this->_class_name, $filter_function)) {
             return call_user_func_array(array($this->_class_name, $filter_function), $args);
         }
+        return null;
     }
 
     /**

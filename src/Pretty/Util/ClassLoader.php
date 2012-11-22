@@ -14,7 +14,7 @@ class ClassLoader
     /**
      * attach the auto loader
      *
-     * @param $callback
+     * @return ClassLoader
      */
     public function enable( ){
         spl_autoload_register( array($this, "auto_load_class") );

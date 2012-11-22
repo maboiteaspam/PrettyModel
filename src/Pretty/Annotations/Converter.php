@@ -44,7 +44,7 @@ class Converter
             if( $class_meta->index[$annotation->name]["type"] === "PK" )
                 $class_meta->pk = $annotation->name;
         }
-        foreach( $this->annotated_model->collect_public_properties() as $index=>$property_name ){
+        foreach( $this->annotated_model->collect_public_properties() as $property_name ){
             if( $this->annotated_model->is_model_property($property_name) ){
                 $class_meta->properties[$property_name] = $this->create_property_meta_data( $property_name );
             }elseif( $this->annotated_model->is_model_association($property_name) ){
@@ -61,7 +61,7 @@ class Converter
 
         if( $annotation->engine !== null )
             $index->engine = $annotation->engine;
-        foreach( $annotation->fields as $field_name=>$field ){
+        foreach( $annotation->fields as $field ){
             $index->fields->append($field["name"]);
         }
         return $index;

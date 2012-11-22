@@ -48,7 +48,7 @@ class TableBuilder
         /**
          * build indexs
          */
-        foreach( $meta_data->index as $index_name=>$index ){
+        foreach( $meta_data->index as $index ){
             /* @var $index Index */
             if( $modeler->hasIndex($table_name, $index->name) == false ){
                 $index_table = ($index->to_array());
@@ -94,7 +94,7 @@ class TableBuilder
         /**
          * build fields
          */
-        foreach( $meta_data->properties as $field_name=>$property_meta ){
+        foreach( $meta_data->properties as $property_meta ){
             /* @var $property_meta Property */
             if( $property_meta->property_type != "scalar" ){
 
