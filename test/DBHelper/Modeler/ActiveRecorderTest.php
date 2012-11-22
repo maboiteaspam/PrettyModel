@@ -18,4 +18,9 @@ class ActiveRecorderTest extends IModelerTest
         $modeler->setContainerName("test");
         $this->object = new \DBHelper\Modeler\ActiveRecorder( $modeler );
     }
+    protected function tearDown()
+    {
+        $this->object->purge();
+        $this->object = null;
+    }
 }

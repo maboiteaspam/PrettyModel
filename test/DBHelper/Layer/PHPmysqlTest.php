@@ -19,6 +19,7 @@ class PHPmysqlTest extends ILayerTest
 
     protected function tearDown()
     {
+        $this->object->exec("DROP TABLE IF EXISTS test_layer");
         $this->object = null;
     }
 }

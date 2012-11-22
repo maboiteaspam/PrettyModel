@@ -18,6 +18,11 @@ class SQLiteTest extends IModelerTest
         $this->object->setLayer( new \DBHelper\Layer\PHPpdo( $db ) );
         $this->object->setContainerName(":memory:");
     }
+    protected function tearDown()
+    {
+        $this->object->purge();
+        $this->object = null;
+    }
 
     function testRemoveField(){
         $this->markTestSkipped("SQLite does not know how to remove fields.");

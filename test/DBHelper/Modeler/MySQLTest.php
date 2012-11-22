@@ -17,4 +17,9 @@ class MySQLTest extends IModelerTest
         $this->object->setLayer( new \DBHelper\Layer\PHPpdo( $db ) );
         $this->object->setContainerName("test");
     }
+    protected function tearDown()
+    {
+        $this->object->purge();
+        $this->object = null;
+    }
 }
