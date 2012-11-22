@@ -15,23 +15,18 @@ class PHPmysql implements ILayer
             return mysql_affected_rows($this->mysql);
         }
         $errno = mysql_errno($this->mysql);
-        if( $errno > 0 ){
-            throw new \DBHelper\SQLException($sql,$errno);
-        }
-        return false;
+        throw new \DBHelper\SQLException($sql,$errno);
     }
     public function query($sql){
-        $retour = array();
         $query = mysql_query($sql, $this->mysql);
         if( !$query ){
             $errno = mysql_errno($this->mysql);
-            if( $errno > 0 )
-                throw new \DBHelper\SQLException($sql,$errno);
-            return false;
+            throw new \DBHelper\SQLException($sql,$errno);
         }
-        while($r=mysql_fetch_assoc($query)) $retour[] = $r;
+        $retour = new PHPmysqlIterator($query);
         return $retour;
     }
+
     public function get_resource(){
         return $this->mysql;
     }
@@ -40,5 +35,32 @@ class PHPmysql implements ILayer
     }
     public function __destruct(){
         return $this->close();
+    }
+}
+class PHPmysqlIterator implements \Iterator {
+    private $query;
+    private $current_;
+    private $is_valid_=true;
+
+    public function __construct( $query ) {
+        $this->query = $query;
+        $this->current_ = mysql_fetch_assoc($this->query);
+    }
+    function rewind() {
+        return false;
+    }
+    function current() {
+        return $this->current_;
+    }
+    function key() {
+        return null;
+    }
+    function next() {
+        $this->current_ = mysql_fetch_assoc($this->query);
+        $this->is_valid_ =  $this->current_!==false;
+        return $this->current_;
+    }
+    function valid() {
+        return $this->is_valid_;
     }
 }

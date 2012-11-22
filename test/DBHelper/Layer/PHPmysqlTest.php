@@ -17,6 +17,15 @@ class PHPmysqlTest extends ILayerTest
         $this->object = new \DBHelper\Layer\PHPmysql( $link );
     }
 
+    function testGetResource(){
+        $this->assertEquals(true,
+            is_resource($this->object->get_resource()),
+            "");
+        $this->assertEquals(true,
+            is_resource($this->object->get_resource()) && strpos(get_resource_type($this->object->get_resource()), 'mysql') !== false,
+            "");
+    }
+
     protected function tearDown()
     {
         $this->object->exec("DROP TABLE IF EXISTS test_layer");

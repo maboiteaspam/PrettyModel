@@ -16,6 +16,15 @@ class PHPpdoTest extends ILayerTest
         $this->object = new \DBHelper\Layer\PHPpdo( $db );
     }
 
+    function testGetResource(){
+        $this->assertEquals(true,
+            is_object($this->object->get_resource()),
+            "");
+        $this->assertEquals(true,
+            is_object($this->object->get_resource()) && $this->object->get_resource() instanceof \PDO,
+            "");
+    }
+
     protected function tearDown()
     {
         $this->object->exec("DROP TABLE IF EXISTS test_layer");
