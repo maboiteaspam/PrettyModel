@@ -18,8 +18,13 @@ class ObjectMeta implements \ArrayAccess {
     {
         $class = get_called_class();
         $obj = new $class();
-        foreach( $an_array as $k=>$v )
-            $obj->$k = $v;
+        foreach( $obj->_obj_properties as $k ){
+            if( isset($an_array[$k]) ){
+                $obj->$k = $an_array[$k];
+            }else{
+                unset($obj->$k);
+            }
+        }
         return $obj;
     }
     public function is_defined( $k ){
@@ -41,12 +46,8 @@ class ObjectMeta implements \ArrayAccess {
         unset($this->_obj_values[$p]);
     }
     public function offsetSet($p, $v) {
-        if (is_null($p)) {
-            $this->container[] = $v;
-        } else {
-            if( in_array($p,$this->_obj_properties)){
-                $this->_obj_values[$p] = $v;
-            }
+        if( in_array($p,$this->_obj_properties)){
+            $this->_obj_values[$p] = $v;
         }
     }
     public function offsetExists($p) {
