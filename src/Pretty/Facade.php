@@ -47,7 +47,7 @@ class Facade
                                 Builder $builder,
                                 ICache $cache){
         $repository = new Repository();
-        $Facade = new Facade($modeler, $repository, $builder, $class_path, $cache);
+        $Facade = new Facade($class_path, $modeler, $repository, $builder, $cache);
         $facade_name = "automatic";
         self::set($facade_name, $Facade);
         self::select($facade_name);
