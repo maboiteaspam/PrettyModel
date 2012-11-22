@@ -16,6 +16,7 @@ class File implements ICache
         $file = $this->path."/".$key.".php";
         if( file_exists($file) )
             return include($file);
+        return null;
     }
     public function exists($key){
         return file_exists($this->path."/".$key.".php");
@@ -37,6 +38,6 @@ class File implements ICache
         return $retour;
     }
     public function count(){
-        return count(scandir($this->path."/"));
+        return count(scandir($this->path."/"))-2;
     }
 }
