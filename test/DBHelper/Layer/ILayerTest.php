@@ -60,17 +60,25 @@ class ILayerTest extends \PHPUnit_Framework_TestCase
             "query must not return false for empty result sets.");
 
         $this->object->exec(" INSERT INTO test_layer VALUES ( 'test' ) ");
-        $this->object->exec(" INSERT INTO test_layer VALUES ( 'test' ) ");
+        $this->object->exec(" INSERT INTO test_layer VALUES ( 'tesst' ) ");
+        $this->object->exec(" INSERT INTO test_layer VALUES ( 'tessts' ) ");
+        $this->object->exec(" INSERT INTO test_layer VALUES ( 'tessst' ) ");
+        $this->object->exec(" INSERT INTO test_layer VALUES ( 'tessst' ) ");
 
         $this->assertNotEquals(false,
             $this->object->query("SELECT * FROM test_layer"),
             "query must not return false for result sets.");
         $query = $this->object->query("SELECT * FROM test_layer");
-        foreach( $query as $key=>$value ){
+        $count = 0;
+        foreach( $query as $value ){
             $this->assertNotEquals(false,
                 $value,
                 "");
+            $count++;
         }
+        $this->assertEquals(5,
+            $count,
+            "");
 
         try {
             $this->object->query(" SELECT not_a_field FROM not_a_table ");
