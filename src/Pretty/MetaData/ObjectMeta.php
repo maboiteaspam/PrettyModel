@@ -18,12 +18,8 @@ class ObjectMeta implements \ArrayAccess {
     {
         $class = get_called_class();
         $obj = new $class();
-        foreach( $obj->_obj_properties as $k ){
-            if( isset($an_array[$k]) ){
-                $obj->$k = $an_array[$k];
-            }else{
-                unset($obj->$k);
-            }
+        foreach( $an_array as $k=>$v ){
+                $obj->$k = $v;
         }
         return $obj;
     }
